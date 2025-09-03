@@ -1,0 +1,1 @@
+INSERT INTO client (name,email) VALUES ('Airton Neto','airtoncon25@gmail.com');
