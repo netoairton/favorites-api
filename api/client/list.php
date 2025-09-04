@@ -1,5 +1,5 @@
 <?php
-require_once "../sql/connect.php";
+require_once __DIR__ . '/../sql/connect.php';
 
 $sql = "SELECT * FROM client";
 $stmt = $pdo->query($sql);

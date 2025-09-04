@@ -1,6 +1,5 @@
 <?php
-require_once "../sql/connect.php";
-
+require_once __DIR__ . '/../sql/connect.php';
 
 if (isset($inputPOST['email']) && isset($inputPOST['name'])) {
     $email = trim($inputPOST['email']);

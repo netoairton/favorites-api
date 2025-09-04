@@ -1,5 +1,5 @@
 <?php
-require_once "../sql/connect.php";
+require_once __DIR__ . '/../sql/connect.php';
 
 
 if (!isset($inputPUT['email']) && !isset($inputPUT['name'])) {
