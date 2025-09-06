@@ -2,14 +2,14 @@
 require_once __DIR__ . '/../sql/connect.php';
 
 if (isset($inputPOST['clientId']) && isset($inputPOST['productId'])) {
-    $clientId = trim($inputPOST['clientId']);
-    $productId = trim($inputPOST['productId']);
+    $clientId = $inputPOST['clientId'];
+    $productId = $inputPOST['productId'];
 
     require_once "validation.php";
     validate_clientId($clientId);
     validate_productId($productId);
 
-    require_once __DIR__ . "product.php";
+    require_once "product.php";
     product_exists($productId);
 
     try {
@@ -19,11 +19,11 @@ if (isset($inputPOST['clientId']) && isset($inputPOST['productId'])) {
         echo json_encode(["message" => "Success on favorite product creation"]);
         exit;
     } catch (PDOException $error) {
-        if ($error->getCode() == 23505) { //Code for UNIQUE postgresql violation
+        if ($error->getCode() == 23505) {
             http_response_code(400);
             echo json_encode(["error" => "Product already favorited by client"]);
             exit;
-        } else if ($error->getCode() == 23503) { //Code for FOREIGN KEY postgresql violation
+        } else if ($error->getCode() == 23503) {
             http_response_code(400);
             echo json_encode(["error" => "Invalid Client id"]);
             exit;

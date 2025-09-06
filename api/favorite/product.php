@@ -21,14 +21,20 @@ function return_product($productId){
 }
 
 function return_products($productIds){
-    $products = [];
+    $products_return = [];
     foreach ($productIds as $id) {
         $product = return_product($id);
         if ($product) {
-            $products[] = $product;
+            $final_product['id'] = $product['id'];
+            $final_product['title'] = $product['title'];
+            $final_product['image'] = $product['image'];
+            $final_product['price'] = $product['price'];
+            $final_product['rating'] = isset($product['rating']) ? $product['rating'] : [];
+
+            $products_return[] = $final_product;
         }
     }
-    return $products;
+    return $products_return;
 }
 
 ?>

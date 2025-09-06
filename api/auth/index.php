@@ -16,7 +16,7 @@ if ( isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"]=="POST" ) {
             exit;
         }else{
             $secret_hash = "PROJETO_AIQFOME_2025";
-            $payload = base64_encode(json_encode(['username' => $username, 'exp' => time() + 3600 //1 hour
+            $payload = base64_encode(json_encode(['username' => $username, 'exp' => time() + 3600
             ]));
             $signatur = base64_encode( hash_hmac('sha256', $payload, $secret_hash, true) );
             $token = $payload.".".$signatur;

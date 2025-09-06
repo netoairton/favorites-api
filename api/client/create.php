@@ -16,7 +16,7 @@ if (isset($inputPOST['email']) && isset($inputPOST['name'])) {
         echo json_encode(["message" => "Success on client creation"]);
         exit;
     } catch (PDOException $error) {
-        if ($error->getCode() == 23505) { //Code for UNIQUE postgresql violation
+        if ($error->getCode() == 23505) {
             http_response_code(400);
             echo json_encode(["error" => "Client email already exists in database"]);
             exit;
