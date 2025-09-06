@@ -1,6 +1,8 @@
 <?php
 header('Content-type: application/json; charset=utf-8');
 
+require_once __DIR__ . '/../auth/validate.php';
+
 $methodList = ["GET", "POST", "PUT", "DELETE"]; //lista de métodos aceitos
 if ( isset($_SERVER["REQUEST_METHOD"]) && in_array($_SERVER["REQUEST_METHOD"], $methodList) ) {
     $method = $_SERVER['REQUEST_METHOD'];

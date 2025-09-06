@@ -11,9 +11,9 @@ if ($folder && is_file($apiPath)) {
         header("Location: /$folder/");
         exit;
     }
-
     require $apiPath;
     exit;
+    
 }
 
 require __DIR__ . '/index.php';
