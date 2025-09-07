@@ -1,0 +1,464 @@
+openapi: 3.0.2
+info:
+  title: Favorite Products API
+  version: 1.0.0
+  description: API for managing customers' favorite products in an e-commerce store.
+servers:
+  - url: http://localhost:8000
+
+
+paths:
+  /client:
+    get:
+      summary: Get all clients
+      tags:
+        - Client
+      responses:
+        '200':
+          description: A list of clients
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ClientData'
+    post:
+      summary: Create a new client
+      tags:
+        - Client
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - email
+                - name
+              properties:
+                email:
+                  type: string
+                  format: email
+                name:
+                  type: string
+      responses:
+        '201':
+          description: Success on client creation
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Client email already exists in database
+                      - Required data for client creation not provided.
+                      - Client email value cannot be empty
+                      - Client email value too large
+                      - Client email value has invalid format
+                      - Client name value cannot be empty
+                      - Client name value too large
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Undisclosed internal error
+
+  /client/{clientId}:
+    get:
+      summary: Get client by ID
+      tags:
+        - Client
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          description: The ID of the client
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Client found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ClientData'
+        '404':
+          description: Client not found
+  
+    put:
+      summary: Update an existing client by ID
+      tags:
+        - Client
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          description: The ID of the client to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - email
+                - name
+              properties:
+                email:
+                  type: string
+                  format: email
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Success on client update
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Client email already exists in database
+                      - Required data for client update not provided
+                      - Client email value too large
+                      - Client email value has invalid format
+                      - Client name value too large
+        '404':
+          description: Client not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Client not found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Undisclosed internal error
+
+    delete:
+      summary: Delete a client by ID
+      tags:
+        - Client
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          description: The ID of the client to delete
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success on client delete
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Success on client delete
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Required id for DELETE method not provided.
+        '404':
+          description: Client not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Client not found
+  
+  /favorite/{clientId}:
+    get:
+      summary: Get all favorited products for a client by clientId
+      tags:
+        - Favorite
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          description: The ID of the client
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of favorited products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FavoritedProduct'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Invalid ID
+                      - Required clientId for GET method not provided.
+  
+  /favorite:
+    post:
+      summary: Create a favorite product for a client
+      tags:
+        - Favorite
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - productId
+                - clientId
+              properties:
+                productId:
+                  type: integer
+                  minimum: 1
+                clientId:
+                  type: integer
+                  minimum: 1
+      responses:
+        '201':
+          description: Success on favorite product creation
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Required data for DELETE method not provided.
+                      - Product already favorited by client
+                      - Invalid Client id
+                      - Required data for favorite creation not provided.
+                      - Product id value cannot be empty
+                      - Invalid format for product id
+                      - Client id value cannot be empty
+                      - Invalid format for client id
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Undisclosed internal error
+  
+    delete:
+      summary: Remove a favorited product for a client
+      tags:
+        - Favorite
+      parameters:
+        - name: clientId
+          in: query
+          required: true
+          description: ID of the client
+          schema:
+            type: integer
+            minimum: 1
+        - name: productId
+          in: query
+          required: true
+          description: ID of the product to unfavorite
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Success on unfavoriting product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Success on unfavoriting product
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - Required data for DELETE method not provided.
+                      - Product id value cannot be empty
+                      - Invalid format for product id
+                      - Client id value cannot be empty
+                      - Invalid format for client id
+        '404':
+          description: Favorite product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Favorite product not found
+
+  /auth:
+    post:
+      summary: Authenticate and obtain a Bearer token
+      security: []
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  example: admin
+                password:
+                  type: string
+                  example: password123
+      responses:
+        '200':
+          description: Authentication successful, returns access token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    example: abc
+        '400':
+          description: Required data for authentication not provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Required data for authentication not provided.
+        '401':
+          description: Wrong credentials provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Wrong credentials provided.
+        '405':
+          description: Unsupported method.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unsupported method.
+
+
+components:
+  schemas:
+    ClientData:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+        name:
+          type: string
+          example: "John Doe"
+    FavoritedProduct:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        title:
+          type: string
+          example: "Wireless Headphones"
+        image:
+          type: string
+          format: uri
+          example: "https://example.com/images/prod123.jpg"
+        price:
+          type: number
+          format: float
+          example: 199.99
+        rating:
+          type: object
+          properties:
+            rate:
+              type: number
+              format: float
+              example: 3.9
+            count:
+              type: integer
+              example: 120
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+
+security:
+  - BearerAuth: []
+
